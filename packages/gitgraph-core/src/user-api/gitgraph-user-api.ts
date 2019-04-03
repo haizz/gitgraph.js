@@ -1,5 +1,3 @@
-import * as yup from "yup";
-
 import { TemplateOptions } from "../template";
 import { Commit, CommitRenderOptions, CommitOptions } from "../commit";
 import {
@@ -173,26 +171,10 @@ class GitgraphUserApi<TNode> {
    * @param data JSON from `git2json` output
    */
   public import(data: any) {
-    // Validate `data` format.
-    const schema = yup.array().of(
-      yup.object({
-        refs: yup.array().of(yup.string()),
-        hash: yup.string(),
-        parents: yup.array().of(yup.string()),
-        author: yup.object({
-          name: yup.string(),
-          email: yup.string(),
-        }),
-        subject: yup.string(),
-        body: yup.string(),
-      }),
-    );
-
     const commitOptionsList: Array<
       CommitOptions<TNode> & { refs: string[] }
-    > = schema
-      .validateSync(data)
-      .map((options) => ({
+    > = data
+      .map((options: any) => ({
         ...options,
         style: { ...this._graph.template.commit },
         author: `${options.author.name} <${options.author.email}>`,
